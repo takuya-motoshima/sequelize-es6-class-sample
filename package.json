@@ -33,6 +33,8 @@
     "@babel/preset-env": "^7.12.11",
     "commander": "^7.0.0",
     "mariadb": "^2.5.2",
+    "moment": "^2.29.1",
+    "node-cron": "^2.0.3",
     "sequelize": "^5.22.3"
   },
   "devDependencies": {

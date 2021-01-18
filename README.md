@@ -83,7 +83,7 @@ This is the experimental code for the Sequelize ORM.
 
 ### Run the sample program.
 
-The executed SQL is output to "./sql.log".  
+The executed SQL is output to "./debug.log".  
 
 #### Search all offices.
 

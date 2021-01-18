@@ -1,7 +1,4 @@
-import fs from 'fs';
-
-// Output the executed SQL to a file.
-const logStream = fs.createWriteStream('./sql.log', {'flags': 'a'});
+import Logger from '../shared/Logger';
 
 // Returns DB connection information.
 export default {
@@ -16,6 +13,6 @@ export default {
   },
   timezone: 'Etc/GMT-9',
   // disable logging; default: console.log
-  logging: message => logStream.write(`${message}\n`)
+  logging: message => Logger.debug(message)
   // logging: console.log
 }

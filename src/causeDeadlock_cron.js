@@ -1,29 +1,35 @@
+import cron from 'node-cron';
+import moment from 'moment';
+import Logger from './shared/Logger';
 import EmployeeModel from './model/EmployeeModel';
 import OfficeModel from './model/OfficeModel';
-import { exec } from 'child_process';
 import program from 'commander';
-import Logger from './shared/Logger';
 
 // Command arguments
 const args = program
-  .option('-m, --mode <mode>', 'Execution mode.', /^(parent|child)$/i, 'parent')
+  .option('-t, --time <time>', 'Execution time.')
   .parse(process.argv)
   .opts();
 
-// Parent thread processing
-function parent() {
-  // Execute child threads..
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => Logger.debug(err ? stderr : stdout));
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => Logger.debug(err ? stderr : stdout));
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => Logger.debug(err ? stderr : stdout));
-}
+// If there is no execution time of the parameter, an error is returned.
+if (!args.time) throw new Error('Parameter execution time is required.');
 
-// Child thread processing
-async function child() {
+// PID.
+const pid = process.pid;
+
+// DB update time.
+const executionTime = moment(args.time);
+// const executionTime = moment().add(5, 'seconds');
+const hour = executionTime.hour();
+const minute = executionTime.minute();
+const second = executionTime.second();
+Logger.debug(`#${pid} Hour: ${hour}`);
+Logger.debug(`#${pid} Minute: ${minute}`);
+Logger.debug(`#${pid} Second: ${second}`);
+
+// Register the process to update DB in cron.
+cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
   try {
-    // PID.
-    const pid = process.pid;
-
     // Office ID to be processed.
     const officeId = 1;
 
@@ -49,11 +55,5 @@ async function child() {
     Logger.debug(`#${pid} Add employees was successful. `);
   } catch (e) {
     Logger.debug(`#${process.pid} Child thread was failed. Message: ${e.message}`);
-    throw e;
   }
-}
-
-// Processing for each mode.
-if (args.mode === 'parent') parent();
-else if (args.mode === 'child') child();
-else throw new Error('The mode is invalid.');
+});
