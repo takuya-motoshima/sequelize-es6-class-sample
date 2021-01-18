@@ -29,6 +29,7 @@
   "homepage": "https://github.com/takuya-motoshima/sequelize-es6-class-sample#readme",
   "dependencies": {
     "@babel/preset-env": "^7.12.11",
+    "commander": "^7.0.0",
     "mariadb": "^2.5.2",
     "sequelize": "^5.22.3"
   },
