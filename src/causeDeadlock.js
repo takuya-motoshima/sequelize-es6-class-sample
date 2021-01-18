@@ -13,31 +13,31 @@ const args = program
 // Parent thread processing
 function parent() {
   // Execute child threads..
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => Logger.debug(err ? stderr : stdout));
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => Logger.debug(err ? stderr : stdout));
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => Logger.debug(err ? stderr : stdout));
+  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
+    if (err) Logger.error(stderr);
+  });
+  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
+    if (err) Logger.error(stderr);
+  });
 }
 
 // Child thread processing
 async function child() {
   try {
-    // PID.
-    const pid = process.pid;
-
     // Office ID to be processed.
     const officeId = 1;
 
     // Updated office name.
     await OfficeModel.update(
-      { city: `#${pid}` },
+      { city: `#${process.pid}` },
       { where: { id: officeId } }
     );
-    Logger.debug(`#${pid} Update office was successful.`);
+    Logger.debug('Update office was successful.');
 
     // Employee data to add.
     const sets = [...Array(10).keys()].map(i => ({
       officeId,
-      name: `#${pid}_${i}`
+      name: `#${process.pid}_${i}`
     }));
 
     // Add employee record.
@@ -46,9 +46,9 @@ async function child() {
       returning: true,
       updateOnDuplicate: Object.keys(sets[0])
     });
-    Logger.debug(`#${pid} Add employees was successful. `);
+    Logger.debug('Add employees was successful.');
   } catch (e) {
-    Logger.debug(`#${process.pid} Child thread was failed. Message: ${e.message}`);
+    Logger.error(`Child thread was failed. Message: ${e.message}`);
     throw e;
   }
 }

@@ -14,6 +14,14 @@ export default class {
    */
   static debug(message) {
     const time = moment().format('YYYY-MM-DD HH:mm:ss');
-    logStream.write(`DEBUG - ${time} --> ${message}\n`)
+    logStream.write(`DEBUG - ${time} --> #${process.pid} ${message}\n`)
+  }
+
+  /**
+   * Write error log.
+   */
+  static error(message) {
+    const time = moment().format('YYYY-MM-DD HH:mm:ss');
+    logStream.write(`ERROR - ${time} --> #${process.pid} ${message}\n`)
   }
 }

@@ -14,18 +14,15 @@ const args = program
 // If there is no execution time of the parameter, an error is returned.
 if (!args.time) throw new Error('Parameter execution time is required.');
 
-// PID.
-const pid = process.pid;
-
 // DB update time.
 const executionTime = moment(args.time);
 // const executionTime = moment().add(5, 'seconds');
 const hour = executionTime.hour();
 const minute = executionTime.minute();
 const second = executionTime.second();
-Logger.debug(`#${pid} Hour: ${hour}`);
-Logger.debug(`#${pid} Minute: ${minute}`);
-Logger.debug(`#${pid} Second: ${second}`);
+Logger.debug(`Hour: ${hour}`);
+Logger.debug(`Minute: ${minute}`);
+Logger.debug(`Second: ${second}`);
 
 // Register the process to update DB in cron.
 cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
@@ -35,15 +32,15 @@ cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
 
     // Updated office name.
     await OfficeModel.update(
-      { city: `#${pid}` },
+      { city: `#${process.pid}` },
       { where: { id: officeId } }
     );
-    Logger.debug(`#${pid} Update office was successful.`);
+    Logger.debug('Update office was successful.');
 
     // Employee data to add.
     const sets = [...Array(10).keys()].map(i => ({
       officeId,
-      name: `#${pid}_${i}`
+      name: `#${process.pid}_${i}`
     }));
 
     // Add employee record.
@@ -52,8 +49,8 @@ cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
       returning: true,
       updateOnDuplicate: Object.keys(sets[0])
     });
-    Logger.debug(`#${pid} Add employees was successful. `);
+    Logger.debug('Add employees was successful.');
   } catch (e) {
-    Logger.debug(`#${process.pid} Child thread was failed. Message: ${e.message}`);
+    Logger.error(`Child thread was failed. Message: ${e.message}`);
   }
 });
