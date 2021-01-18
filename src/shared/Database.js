@@ -11,9 +11,13 @@ class Database extends Sequelize {
    * Create a DB connection instance of Sequelize.
    */
   constructor() {
-    super(config.database, config.username, config.password, config);
+    super(
+      config.database,
+      config.username,
+      config.password,
+      config
+    );
   }
-
 
   /**
    * Returns true if the DB can be connected, false if the connection cannot be made..

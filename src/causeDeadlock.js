@@ -1,4 +1,5 @@
 import EmployeeModel from './model/EmployeeModel';
+import OfficeModel from './model/OfficeModel';
 import { exec } from 'child_process';
 import program from 'commander';
 
@@ -19,21 +20,34 @@ function parent() {
 // Child thread processing
 async function child() {
   try {
+    // PID.
+    const pid = process.pid;
+
+    // Office ID to be processed.
+    const officeId = 1;
+
+    // Updated office name.
+    await OfficeModel.update(
+      { city: `#${pid}` },
+      { where: { id: officeId } }
+    );
+    console.log(`#${pid} Update office was successful.`);
+
     // Employee data to add.
     const sets = [...Array(10).keys()].map(i => ({
-      officeId: 1,
-      name: `#${process.pid}_${i}`
+      officeId,
+      name: `#${pid}_${i}`
     }));
 
     // Add employee record.
     await EmployeeModel.bulkCreate(sets, {
       validate: true,
-      returning: false,
+      returning: true,
       updateOnDuplicate: Object.keys(sets[0])
     });
-    console.log(`#${process.pid} Add employees was successful. `);
+    console.log(`#${pid} Add employees was successful. `);
   } catch (e) {
-    console.log(`#${process.pid} Add employees was failed. Message: ${e.message}`);
+    console.log(`#${process.pid} Child thread was failed. Message: ${e.message}`);
     throw e;
   }
 }

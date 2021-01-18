@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "This is the experimental code for the Sequelize ORM.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "connect": "mysql -u root -D sequelize-es6-class-sample"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/takuya-motoshima/sequelize-es6-class-sample.git"
