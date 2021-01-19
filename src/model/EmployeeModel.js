@@ -21,6 +21,7 @@ export default (class extends Model {
         autoIncrement: true
       },
       officeId: this.DataTypes.INTEGER,
+      seq: this.DataTypes.INTEGER,
       name: this.DataTypes.STRING,
       created: this.DataTypes.DATE,
       modified: this.DataTypes.DATE

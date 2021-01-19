@@ -21,7 +21,7 @@ function startChildProcess() {
   const second = time.second();
 
   // Execute multiple DB update tasks after 1 second.
-  for (let i=0; i<2; i++) {
+  for (let i=0; i<5; i++) {
     cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
       exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
         if (err) Logger.error(stderr);
@@ -34,15 +34,26 @@ function startChildProcess() {
 async function childProcess() {
   try {
     // Add office.
-    const office = await OfficeModel.create({ city: `#{process.pid}` }, {
+    const office = await OfficeModel.create({
+      city: `#{process.pid}`
+    }, {
       validate: true,
       returning: true
     });
     Logger.debug('Add office was successful.');
 
+    // Update office.
+    await OfficeModel.update({
+      city: `#{process.pid}`
+    }, {
+      where: { id: office.id },
+    });
+    Logger.debug('Update office was successful.'); 
+
     // Employee data to add.
     const sets = [...Array(10).keys()].map(i => ({
       officeId: office.id,
+      seq: i,
       name: `#${process.pid}_${i}`
     }));
 
