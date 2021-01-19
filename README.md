@@ -50,7 +50,7 @@ This is the experimental code for the Sequelize ORM.
       `modified` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
       PRIMARY KEY (`id`),
       UNIQUE KEY `uk_employee_1` (`officeId`,`seq`),
-      CONSTRAINT `fk_employee_1` FOREIGN KEY (`officeId`) REFERENCES `office` (`id`)
+      CONSTRAINT `fk_employee_1` FOREIGN KEY (`officeId`) REFERENCES `office` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
     INSERT  INTO `employee`(`officeId`,`seq`,`name`) VALUES

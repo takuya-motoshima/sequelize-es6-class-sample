@@ -15,13 +15,13 @@ const args = program
 // Start child process.
 function startChildProcess() {
   // Execution time.
-  const time = moment().add(1, 'seconds');
+  const time = moment().add(2, 'seconds');
   const hour = time.hour();
   const minute = time.minute();
   const second = time.second();
 
-  // Execute multiple DB update tasks after 1 second.
-  for (let i=0; i<5; i++) {
+  // Execute multiple DB update tasks after 2 second.
+  for (let i=0; i<10; i++) {
     cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
       exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
         if (err) Logger.error(stderr);
