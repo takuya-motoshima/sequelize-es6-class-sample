@@ -9,21 +9,24 @@ import moment from 'moment';
 // Command arguments
 const args = program
   .option('-m, --mode <mode>', 'Execution mode.', /^(parent|child)$/i, 'parent')
+  .option('-i, --index <index>', 'Child process index.')
   .parse(process.argv)
   .opts();
 
 // Start child process.
-function startChildProcess() {
+async function startChildProcess() {
+  // Clear the employee table.
+  await EmployeeModel.destroy({ truncate : true, cascade: false });
+
   // Execution time.
   const time = moment().add(2, 'seconds');
   const hour = time.hour();
   const minute = time.minute();
   const second = time.second();
-
   // Execute multiple DB update tasks after 2 second.
-  for (let i=0; i<10; i++) {
+  for (let i=0; i<4; i++) {
     cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
-      exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
+      exec(`npx babel-node src/causeDeadlock --mode child --index ${i}`, (err, stdout, stderr) => {
         if (err) Logger.error(stderr);
       });
     });
@@ -32,40 +35,29 @@ function startChildProcess() {
 
 // Child process.
 async function childProcess() {
+  const trn = await EmployeeModel.begin();
   try {
     // Add office.
-    const office = await OfficeModel.create({
-      city: `#{process.pid}`
-    }, {
-      validate: true,
-      returning: true
+    const office = await OfficeModel.create({ city: `#{process.pid}` }, {
+      transaction: trn
     });
     Logger.debug('Add office was successful.');
 
-    // Update office.
-    await OfficeModel.update({
-      city: `#{process.pid}`
-    }, {
-      where: { id: office.id },
-    });
-    Logger.debug('Update office was successful.'); 
-
-    // Employee data to add.
-    const sets = [...Array(10).keys()].map(i => ({
-      officeId: office.id,
-      seq: i,
-      name: `#${process.pid}_${i}`
-    }));
-
     // Add employee.
+    let names = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    // if (args.index % 2 !== 0) names.reverse();
+    const sets = names.map(name => ({ officeId: office.id, name }));
     await EmployeeModel.bulkCreate(sets, {
+      transaction: trn,
       validate: true,
       returning: true,
       updateOnDuplicate: Object.keys(sets[0])
     });
     Logger.debug('Add employees was successful.');
+    await trn.commit();
   } catch (e) {
-    Logger.error(e.message);
+    Logger.error(e);
+    await trn.rollback();
     throw e;
   }
 }

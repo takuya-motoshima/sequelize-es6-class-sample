@@ -44,24 +44,23 @@ This is the experimental code for the Sequelize ORM.
     CREATE TABLE `employee` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `officeId` int(10) unsigned NOT NULL,
-      `seq` int(10) unsigned NOT NULL,
       `name` varchar(50) NOT NULL,
       `created` datetime NOT NULL DEFAULT current_timestamp(),
       `modified` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
       PRIMARY KEY (`id`),
-      UNIQUE KEY `uk_employee_1` (`officeId`,`seq`),
+      UNIQUE KEY `uk_employee_1` (`officeId`, `name`),
       CONSTRAINT `fk_employee_1` FOREIGN KEY (`officeId`) REFERENCES `office` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-    INSERT  INTO `employee`(`officeId`,`seq`,`name`) VALUES
-      (1, 0, 'Diane'),
-      (1, 1, 'Mary'),
-      (2, 0, 'Julie'),
-      (3, 0, 'Foon Yue'),
-      (4, 0, 'Gerard'),
-      (5, 0, 'Mami'),
-      (6, 0, 'William'),
-      (7, 0, 'Larry');
+    INSERT  INTO `employee`(`officeId`,`name`) VALUES
+      (1, 'Diane'),
+      (1, 'Mary'),
+      (2, 'Julie'),
+      (3, 'Foon Yue'),
+      (4, 'Gerard'),
+      (5, 'Mami'),
+      (6, 'William'),
+      (7, 'Larry');
     ```
 
 1. Check registration details.

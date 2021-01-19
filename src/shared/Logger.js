@@ -23,7 +23,8 @@ export default class {
    * format: ERROR - <YYYY-MM-DD HH:mm:ss> --> #<PID> <Message>
    */
   static error(message) {
-    message = `ERROR - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message}`;
+    if (message instanceof Error) message = `ERROR - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message.message} ${message.stack}`;
+    else message = `ERROR - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message}`;
     logStream.write(`${message}\n`)
   }
 }
