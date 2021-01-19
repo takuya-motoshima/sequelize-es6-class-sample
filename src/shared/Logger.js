@@ -14,8 +14,7 @@ export default class {
    * format: DEBUG - <YYYY-MM-DD HH:mm:ss> --> #<PID> <Message>
    */
   static debug(message) {
-    message = `DEBUG - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message}`;
-    logStream.write(`${message}\n`)
+    this.write('DEBUG', message);
   }
 
   /**
@@ -23,8 +22,13 @@ export default class {
    * format: ERROR - <YYYY-MM-DD HH:mm:ss> --> #<PID> <Message>
    */
   static error(message) {
-    if (message instanceof Error) message = `ERROR - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message.message} ${message.stack}`;
-    else message = `ERROR - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message}`;
-    logStream.write(`${message}\n`)
+    this.write('ERROR', message instanceof Error ? `${message.message} ${message.stack}` : message);
+  }
+
+  /**
+   * Write a log to a file.
+   */
+  static write(level, message) {
+    logStream.write(`${level} - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message}\n`);
   }
 }

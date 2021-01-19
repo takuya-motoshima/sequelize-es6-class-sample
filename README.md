@@ -85,6 +85,12 @@ This is the experimental code for the Sequelize ORM.
 
 The executed SQL is output to "./debug.log".  
 
+You can monitor the debug log with the following command.  
+
+```sh
+npm run log;
+```
+
 #### Search all offices.
 
 ```sh
@@ -168,6 +174,12 @@ npx babel-node src/searchEmployeesJoinOffice;
 ```sh
 npx babel-node src/addOffices;
 # Added an office with ID = 8
+```
+
+#### Cause deadlock.
+
+```sh
+npx babel-node src/causeDeadlock;
 ```
 
 ## Usage

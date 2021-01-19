@@ -1,4 +1,9 @@
-import { Sequelize, Model as SequelizeModel, DataTypes, transaction } from 'sequelize';
+import {
+  Sequelize,
+  Model as SequelizeModel,
+  DataTypes,
+  transaction,
+  Op} from 'sequelize';
 import database from './Database';
 
 /**
@@ -29,6 +34,15 @@ export default class Model extends SequelizeModel {
    */
   static get DataTypes() {
     return DataTypes;
+  }
+
+  /**
+   * Sequelize provides several operators.
+   * 
+   * @see https://sequelize.org/master/manual/model-querying-basics.html#operators
+   */
+  static get Op() {
+    return Op;
   }
 
   /**

@@ -5,6 +5,13 @@ import program from 'commander';
 import Logger from './shared/Logger';
 import cron from 'node-cron';
 import moment from 'moment';
+import { Op } from 'sequelize';
+
+// Number of child processes.
+const numberOfChildProcesses = 2
+
+// True if truncate the employee before execution.
+const isTruncateEmployees = false;
 
 // Command arguments
 const args = program
@@ -16,7 +23,8 @@ const args = program
 // Start child process.
 async function startChildProcess() {
   // Clear the employee table.
-  await EmployeeModel.destroy({ truncate : true, cascade: false });
+  if (isTruncateEmployees)
+    await EmployeeModel.destroy({ truncate : true, cascade: false });
 
   // Execution time.
   const time = moment().add(2, 'seconds');
@@ -24,7 +32,7 @@ async function startChildProcess() {
   const minute = time.minute();
   const second = time.second();
   // Execute multiple DB update tasks after 2 second.
-  for (let i=0; i<4; i++) {
+  for (let i=0; i<numberOfChildProcesses; i++) {
     cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
       exec(`npx babel-node src/causeDeadlock --mode child --index ${i}`, (err, stdout, stderr) => {
         if (err) Logger.error(stderr);
@@ -41,12 +49,33 @@ async function childProcess() {
     const office = await OfficeModel.create({ city: `#{process.pid}` }, {
       transaction: trn
     });
-    Logger.debug('Add office was successful.');
+    Logger.debug(`Add office was successful. Added office: ${JSON.stringify(office.toJSON())}`);
+
+    // Update office.
+    await OfficeModel.update({
+      city: `${office.city}_edited`
+    }, {
+      where: {
+        id: office.id
+      }
+    });
+    Logger.debug('Update office was successful.');
+
+    // // Search employee.
+    // const employees = await EmployeeModel.findAll({
+    //   where: { id: { [Op.gte]: 1 } },
+    //   raw: true
+    // });
+    // Logger.debug(`Search employees was successful. Count: ${employees.length}`);
 
     // Add employee.
-    let names = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    // let names = 'abcdefghijklmnopqrstuvwxyz'.split('');
     // if (args.index % 2 !== 0) names.reverse();
-    const sets = names.map(name => ({ officeId: office.id, name }));
+    // const sets = names.map(name => ({ officeId: office.id, name }));
+    const sets = [...Array(10).keys()].map(i => ({
+      officeId: office.id,
+      name: `${office.id}_${i}`
+    }));
     await EmployeeModel.bulkCreate(sets, {
       transaction: trn,
       validate: true,

@@ -13,5 +13,5 @@ export default {
   },
   timezone: 'Etc/GMT-9',
   // disable logging; default: console.log
-  logging: message => Logger.debug(message)
+  logging: message => Logger.debug(message.replace(/^\s*Executing (..*?):\s*/, ''))
 }
