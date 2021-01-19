@@ -1,6 +1,6 @@
 {
   "name": "sequelize-es6-class-sample",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is the experimental code for the Sequelize ORM.",
   "main": "index.js",
   "scripts": {
