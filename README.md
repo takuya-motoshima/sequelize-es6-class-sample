@@ -80,7 +80,6 @@ This is the experimental code for the Sequelize ORM.
     +---------------+----------+
     ```
 
-
 ### Run the sample program.
 
 The executed SQL is output to "./debug.log".  
@@ -111,21 +110,21 @@ npx babel-node src/searchAllOffices;
 ```sh
 npx babel-node src/searchOffices;
 
-#[
-#  {
-#    id: 1,
-#    city: 'San Francisco',
-#    created: 2021-01-18T02:39:30.000Z,
-#    modified: 2021-01-18T02:39:30.000Z
-#  },
-#  {
-#    id: 2,
-#    city: 'Boston',
-#    created: 2021-01-18T02:39:30.000Z,
-#    modified: 2021-01-18T02:39:30.000Z
-#  },
-#  ...
-#]
+# [
+#   {
+#     id: 1,
+#     city: 'San Francisco',
+#     created: 2021-01-18T02:39:30.000Z,
+#     modified: 2021-01-18T02:39:30.000Z
+#   },
+#   {
+#     id: 2,
+#     city: 'Boston',
+#     created: 2021-01-18T02:39:30.000Z,
+#     modified: 2021-01-18T02:39:30.000Z
+#   },
+#   ...
+# ]
 ```
 
 #### Search all employees.
@@ -133,22 +132,22 @@ npx babel-node src/searchOffices;
 ```sh
 npx babel-node src/searchEmployees;
 
-#[
-#  {
-#    id: 1,
-#    officeId: 1,
-#    name: 'Diane',
-#    created: 2021-01-18T03:10:42.000Z,
-#    modified: 2021-01-18T03:10:42.000Z
-#  },
-#  {
-#    id: 2,
-#    officeId: 1,
-#    name: 'Mary',
-#    created: 2021-01-18T03:10:42.000Z,
-#    modified: 2021-01-18T03:10:42.000Z
-#  },
-#]
+# [
+#   {
+#     id: 1,
+#     officeId: 1,
+#     name: 'Diane',
+#     created: 2021-01-18T03:10:42.000Z,
+#     modified: 2021-01-18T03:10:42.000Z
+#   },
+#   {
+#     id: 2,
+#     officeId: 1,
+#     name: 'Mary',
+#     created: 2021-01-18T03:10:42.000Z,
+#     modified: 2021-01-18T03:10:42.000Z
+#   },
+# ]
 ```
 
 #### Search by adding office information to employees.
@@ -156,11 +155,18 @@ npx babel-node src/searchEmployees;
 ```sh
 npx babel-node src/searchEmployeesJoinOffice;
 
-#[
-#  { name: 'Diane', office: { city: 'San Francisco' } },
-#  { name: 'Mary', office: { city: 'San Francisco' } },
-#  ...
-#]
+# Added an office with ID = 8
+#   { name: 'Diane', office: { city: 'San Francisco' } },
+#   { name: 'Mary', office: { city: 'San Francisco' } },
+#   ...
+# ]
+```
+
+#### Add office.
+
+```sh
+npx babel-node src/addOffices;
+# Added an office with ID = 8
 ```
 
 ## Usage

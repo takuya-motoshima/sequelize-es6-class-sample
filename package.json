@@ -4,7 +4,8 @@
   "description": "This is the experimental code for the Sequelize ORM.",
   "main": "index.js",
   "scripts": {
-    "connect": "mysql -u root -D sequelize-es6-class-sample"
+    "connect": "mysql -u root -D sequelize-es6-class-sample",
+    "log": "tail -f ./debug.log"
   },
   "repository": {
     "type": "git",

@@ -3,6 +3,8 @@ import OfficeModel from './model/OfficeModel';
 import { exec } from 'child_process';
 import program from 'commander';
 import Logger from './shared/Logger';
+import cron from 'node-cron';
+import moment from 'moment';
 
 // Command arguments
 const args = program
@@ -10,37 +12,41 @@ const args = program
   .parse(process.argv)
   .opts();
 
-// Parent thread processing
-function parent() {
-  // Execute child threads..
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
-    if (err) Logger.error(stderr);
-  });
-  exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
-    if (err) Logger.error(stderr);
-  });
+// Start child process.
+function startChildProcess() {
+  // Execution time.
+  const time = moment().add(1, 'seconds');
+  const hour = time.hour();
+  const minute = time.minute();
+  const second = time.second();
+
+  // Execute multiple DB update tasks after 1 second.
+  for (let i=0; i<2; i++) {
+    cron.schedule(`${second} ${minute} ${hour} * * *`, async () => {
+      exec('npx babel-node src/causeDeadlock --mode child', (err, stdout, stderr) => {
+        if (err) Logger.error(stderr);
+      });
+    });
+  }
 }
 
-// Child thread processing
-async function child() {
+// Child process.
+async function childProcess() {
   try {
-    // Office ID to be processed.
-    const officeId = 1;
-
-    // Updated office name.
-    await OfficeModel.update(
-      { city: `#${process.pid}` },
-      { where: { id: officeId } }
-    );
-    Logger.debug('Update office was successful.');
+    // Add office.
+    const office = await OfficeModel.create({ city: `#{process.pid}` }, {
+      validate: true,
+      returning: true
+    });
+    Logger.debug('Add office was successful.');
 
     // Employee data to add.
     const sets = [...Array(10).keys()].map(i => ({
-      officeId,
+      officeId: office.id,
       name: `#${process.pid}_${i}`
     }));
 
-    // Add employee record.
+    // Add employee.
     await EmployeeModel.bulkCreate(sets, {
       validate: true,
       returning: true,
@@ -48,12 +54,12 @@ async function child() {
     });
     Logger.debug('Add employees was successful.');
   } catch (e) {
-    Logger.error(`Child thread was failed. Message: ${e.message}`);
+    Logger.error(e.message);
     throw e;
   }
 }
 
 // Processing for each mode.
-if (args.mode === 'parent') parent();
-else if (args.mode === 'child') child();
+if (args.mode === 'parent') startChildProcess();
+else if (args.mode === 'child') childProcess();
 else throw new Error('The mode is invalid.');

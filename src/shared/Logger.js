@@ -11,17 +11,19 @@ export default class {
 
   /**
    * Write debug log.
+   * format: DEBUG - <YYYY-MM-DD HH:mm:ss> --> #<PID> <Message>
    */
   static debug(message) {
-    const time = moment().format('YYYY-MM-DD HH:mm:ss');
-    logStream.write(`DEBUG - ${time} --> #${process.pid} ${message}\n`)
+    message = `DEBUG - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message}`;
+    logStream.write(`${message}\n`)
   }
 
   /**
    * Write error log.
+   * format: ERROR - <YYYY-MM-DD HH:mm:ss> --> #<PID> <Message>
    */
   static error(message) {
-    const time = moment().format('YYYY-MM-DD HH:mm:ss');
-    logStream.write(`ERROR - ${time} --> #${process.pid} ${message}\n`)
+    message = `ERROR - ${moment().format('YYYY-MM-DD HH:mm:ss')} --> #${process.pid} ${message}`;
+    logStream.write(`${message}\n`)
   }
 }
