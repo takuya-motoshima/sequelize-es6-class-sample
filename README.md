@@ -261,6 +261,7 @@ npx babel-node src/causeDeadlock;
 - [MySQL InnoDB Deadlock For 2 simple insert queries - Database Administrators Stack Exchange](https://dba.stackexchange.com/questions/86878/mysql-innodb-deadlock-for-2-simple-insert-queries)
 - [MySQL :: MySQL 8.0 Reference Manual :: 15.7.1 InnoDB Locking](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html#innodb-next-key-locks)
 - [Illustrate the mechanism and scope of next key lock in MySQL (InnoDB)](https://norikone.hatenablog.com/entry/2018/09/12/MySQL%28InnoDB%29%E3%81%AE%E3%83%8D%E3%82%AF%E3%82%B9%E3%83%88%E3%82%AD%E3%83%BC%E3%83%AD%E3%83%83%E3%82%AF%E3%81%AE%E4%BB%95%E7%B5%84%E3%81%BF%E3%81%A8%E7%AF%84%E5%9B%B2%E3%82%92%E5%9B%B3%E8%A7%A3)
+- [Check the deadlock of "Next Key Lock" and "Insert Intention Gap Lock" of mysql Check](https://zudoh.com/mysql/research-next-key-lock-and-insert-intention-gap-lock)
 
 ## License
 
